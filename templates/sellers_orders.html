@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Orders Received</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Helvetica Neue, sans-serif;
+        }
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        nav {
+            background-color: #1781f8;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+        }
+        nav .logo {
+            display: flex;
+            align-items: center;
+        }
+        nav .title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        nav ul {
+            list-style: none;
+            display: flex;
+        }
+        nav ul li {
+            margin-left: 20px;
+            font-weight: bold;
+        }
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+        nav ul li a:hover {
+            background-color: #00adfd;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        .orders-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .orders-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .orders-header h1 {
+            color: #1781f8;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .order-id {
+            font-weight: bold;
+        }
+        .order-actions {
+            display: flex;
+            gap: 5px;
+        }
+        .btn {
+            display: inline-block;
+            background-color: #1781f8;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+        }
+        .btn:hover {
+            background-color: #00adfd;
+        }
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 14px;
+        }
+        .empty-list {
+            text-align: center;
+            padding: 40px 0;
+            color: #666;
+        }
+        .flash-message {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .flash-message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav>
+        <div class="logo">
+            <img src="https://upload.wikimedia.org/wikipedia/en/3/3a/Penn_State_Nittany_Lions_logo.svg" alt="Penn State Logo" height="40">
+            <div class="title">Nittany Business</div>
+        </div>
+        <ul>
+            <li><a href="{{ url_for('home') }}">Home</a></li>
+            <li><a href="{{ url_for('categories') }}">Categories</a></li>
+            <li><a href="{{ url_for('search') }}">Search</a></li>
+            <li><a href="{{ url_for('seller_products') }}">My Products</a></li>
+            <li><a href="{{ url_for('sellers_orders') }}">Orders</a></li>
+            <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message {% if category == 'error' %}error{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="orders-container">
+            <div class="orders-header">
+                <h1>Orders Received</h1>
+            </div>
+            
+            {% if orders %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Date</th>
+                            <th>Product</th>
+                            <th>Buyer</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in orders %}
+                            <tr>
+                                <td class="order-id">{{ order.order_id }}</td>
+                                <td>{{ order.date }}</td>
+                                <td>{{ order.product_name }}</td>
+                                <td>{{ order.buyer_name }}</td>
+                                <td>{{ order.quantity }}</td>
+                                <td>${{ "%.2f"|format(order.payment) }}</td>
+                                <td>
+                                    <div class="order-actions">
+                                        <a href="{{ url_for('order_detail', order_id=order.order_id) }}" class="btn btn-sm">View Details</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <div class="empty-list">
+                    <p>You haven't received any orders yet.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

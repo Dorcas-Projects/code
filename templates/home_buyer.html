@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Buyer Home Page</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Helvetica Neue, sans-serif;
+        }
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        nav {
+            background-color: #1781f8;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+        }
+        nav .logo {
+            display: flex;
+            align-items: center;
+        }
+        nav .title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        nav ul {
+            list-style: none;
+            display: flex;
+        }
+        nav ul li {
+            margin-left: 20px;
+            font-weight: bold;
+        }
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+        nav ul li a:hover {
+            background-color: #00adfd;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 80px auto 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .welcome {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .welcome h1 {
+            font-size: 32px;
+            margin-bottom: 15px;
+            color: #1781f8;
+        }
+        .welcome p {
+            font-size: 18px;
+            color: #666;
+        }
+        .btn-container {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .btn-container a {
+            background-color: #1781f8;
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            font-weight: bold;
+        }
+        .btn-container a:hover {
+            background-color: #00adfd;
+        }
+    </style>
+</head>
+<body>
+    <!-- navigation bar -->
+    <nav>
+        <div class="logo">
+            <img src="https://upload.wikimedia.org/wikipedia/en/3/3a/Penn_State_Nittany_Lions_logo.svg" alt="Penn State Logo" height = "40">
+            <div class = "title">Nittany Business </div>
+        </div>
+        <ul>
+            <li><a href="{{ url_for('buyer_personal_info') }}">My Profile</a></li>
+            <li><a href="{{ url_for('search') }}">Search for Products</a></li>
+            <li><a href="{{ url_for('cart') }}">Shopping Cart</a></li>
+            <li><a href="{{ url_for('buyers_orders') }}">My Orders</a></li>
+            <li><a href="{{ url_for('submit_request') }}">Support</a></li>
+            <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        </ul>
+    </nav>
+    <!-- welcome content with buttons -->
+    <div class="container">
+        <div class="welcome">
+            <h1>Welcome to the Buyer Dashboard!</h1>
+            <p>Use the navigation bar above or buttons below to review and edit your personal information, browse products, manage your shopping cart, and view orders.</p>
+        </div>
+        <div class="btn-container">
+              <a href="{{ url_for('buyer_personal_info') }}">My Profile</a>
+              <a href="{{ url_for('search') }}">Search for Products</a>
+              <a href="{{ url_for('cart') }}">Shopping Cart</a>
+              <a href="{{ url_for('buyers_orders') }}">My Orders</a>
+        </div>
+
+    </div>
+</body>
+</html>

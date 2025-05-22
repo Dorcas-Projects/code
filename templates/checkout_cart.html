@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Checkout</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Helvetica Neue, sans-serif;
+        }
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        nav {
+            background-color: #1781f8;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+        }
+        nav .logo {
+            display: flex;
+            align-items: center;
+        }
+        nav .title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        nav ul {
+            list-style: none;
+            display: flex;
+        }
+        nav ul li {
+            margin-left: 20px;
+            font-weight: bold;
+        }
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+        nav ul li a:hover {
+            background-color: #00adfd;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        .checkout-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+        .order-summary, 
+        .payment-section {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .section-header {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        .section-header h2 {
+            color: #1781f8;
+        }
+        .order-items {
+            margin-bottom: 20px;
+        }
+        .order-item {
+            display: grid;
+            grid-template-columns: 3fr 1fr 1fr 1fr;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .order-item-header {
+            font-weight: bold;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+        }
+        .order-item-name {
+            font-weight: bold;
+        }
+        .order-item-price,
+        .order-item-total {
+            text-align: right;
+        }
+        .order-total {
+            display: flex;
+            justify-content: space-between;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #ddd;
+        }
+        .payment-methods {
+            margin-bottom: 20px;
+        }
+        .payment-method {
+            padding: 15px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .payment-method:hover,
+        .payment-method.selected {
+            border-color: #1781f8;
+            background-color: #f0f8ff;
+        }
+        .payment-method input[type="radio"] {
+            margin-right: 10px;
+        }
+        .card-info {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+            margin-left: 25px;
+        }
+        .btn {
+            display: inline-block;
+            background-color: #1781f8;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .btn:hover {
+            background-color: #00adfd;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        .flash-message {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .flash-message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav>
+        <div class="logo">
+            <img src="https://upload.wikimedia.org/wikipedia/en/3/3a/Penn_State_Nittany_Lions_logo.svg" alt="Penn State Logo" height="40">
+            <div class="title">Nittany Business</div>
+        </div>
+        <ul>
+            <li><a href="{{ url_for('home') }}">Home</a></li>
+            <li><a href="{{ url_for('categories') }}">Categories</a></li>
+            <li><a href="{{ url_for('search') }}">Search</a></li>
+            {% if session.get('is_buyer') %}
+            <li><a href="{{ url_for('cart') }}">Cart</a></li>
+            <li><a href="{{ url_for('buyers_orders') }}">My Orders</a></li>
+            {% elif session.get('is_seller') %}
+            <li><a href="{{ url_for('seller_products') }}">My Products</a></li>
+            <li><a href="{{ url_for('seller_orders') }}">Orders</a></li>
+            {% endif %}
+            <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message {% if category == 'error' %}error{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <h1 style="margin-bottom: 20px;">Checkout</h1>
+        
+        <div class="checkout-container">
+            <!-- Order Summary -->
+            <div class="order-summary">
+                <div class="section-header">
+                    <h2>Order Summary</h2>
+                </div>
+                
+                <div class="order-items">
+                    <!-- Header Row -->
+                    <div class="order-item order-item-header">
+                        <div>Product</div>
+                        <div>Price</div>
+                        <div>Quantity</div>
+                        <div>Total</div>
+                    </div>
+                    
+                    <!-- Order Items -->
+                    {% for item in cart_items %}
+                        <div class="order-item">
+                            <div class="order-item-name">
+                                {{ item.product_name }}
+                                <div style="font-weight: normal; font-size: 0.9em; color: #666;">
+                                    Seller: {{ item.seller_name }}
+                                </div>
+                            </div>
+                            
+                            <div class="order-item-price">${{ "%.2f"|format(item.product_price) }}</div>
+                            <div>{{ item.quantity }}</div>
+                            <div class="order-item-total">${{ "%.2f"|format(item.product_price * item.quantity) }}</div>
+                        </div>
+                    {% endfor %}
+                </div>
+                
+                <div class="order-total">
+                    <div>Total:</div>
+                    <div>${{ "%.2f"|format(total) }}</div>
+                </div>
+            </div>
+            
+            <!-- Payment Section -->
+            <div class="payment-section">
+                <div class="section-header">
+                    <h2>Payment Method</h2>
+                </div>
+                
+                <form action="{{ url_for('checkout') }}" method="post">
+                    <div class="payment-methods">
+                        {% if credit_cards %}
+                            {% for card in credit_cards %}
+                                <div class="payment-method">
+                                    <label>
+                                        <input type="radio" name="payment_method" value="{{ card.credit_card_num }}" required {% if loop.first %}checked{% endif %}>
+                                        {{ card.card_type }}
+                                        <div class="card-info">
+                                            **** **** **** {{ card.credit_card_num[-4:] }}<br>
+                                            Expires: {{ card.expire_month }}/{{ card.expire_year }}
+                                        </div>
+                                    </label>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p>You don't have any saved payment methods.</p>
+                            <!-- This would be where a form to add a new card would go -->
+                        {% endif %}
+                    </div>
+                    
+                    <button type="submit" class="btn">Place Order</button>
+                </form>
+                
+                <a href="{{ url_for('cart') }}" class="btn btn-secondary" style="margin-top: 10px;">Back to Cart</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

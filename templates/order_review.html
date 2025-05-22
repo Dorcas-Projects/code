@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Review Your Order</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Helvetica Neue, sans-serif;
+        }
+        body {
+            background-color: #f5f5f5;
+            color: #000000;
+            line-height: 1.6;
+        }
+        nav {
+            background-color: #1781f8;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+        }
+        nav .logo {
+            display: flex;
+            align-items: center;
+        }
+        nav .title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        nav ul {
+            list-style: none;
+            display: flex;
+        }
+        nav ul li {
+            margin-left: 20px;
+            font-weight: bold;
+        }
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+        nav ul li a:hover {
+            background-color: #00adfd;
+        }
+        h2{
+            text-align: center;
+            margin: 20px 0;
+            color: #1781f8;
+        }
+        .container{
+            max-width:600px;
+            margin:auto;
+            background:#fff;
+            padding:20px;
+            border-radius:8px;
+        }
+        .line{
+            display:flex;
+            justify-content:space-between;
+            margin:0.5em 0;
+        }
+        .total{
+            font-weight:bold;
+            font-size:1.2em;
+        }
+        .btn{
+            display:block;
+            width:100%;
+            margin-top:1.5em;
+            padding:10px;
+            background:#1781f8;
+            color:#fff;
+            text-align:center;
+            text-decoration:none;
+            border-radius:4px;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <img src="https://upload.wikimedia.org/wikipedia/en/3/3a/Penn_State_Nittany_Lions_logo.svg" alt="Penn State Logo" height="40">
+            <div class="title">Nittany Business</div>
+        </div>
+        <ul>
+            <li><a href="{{ url_for('home') }}">Home</a></li>
+            <li><a href="{{ url_for('search') }}">Back to Search</a></li>
+        </ul>
+    </nav>
+    <div class="container">
+        <h2>Review Your Order</h2>
+        <div class="line">
+            <span>Product:</span>
+            <span>{{ product['product_name'] }}</span>
+        </div>
+        <div class="line">
+            <span>Seller:</span>
+            <span>{{ seller['business_name'] }} </span>
+        </div>
+        <div class="line">
+            <span>Seller Email:</span>
+            <span>{{ seller['email'] }}</span>
+        </div>
+        <div class="line">
+            <span>Unit price:</span>
+            <span>${{ "%.2f"|format(product['product_price']) }}</span>
+        </div>
+        <div class="line">
+            <span>Rating:</span>
+            <span>{{ avg_rating }}</span>
+        </div>
+        <div class="line">
+            <span>Quantity:</span>
+            <span>{{ quantity }}</span>
+        </div>
+        <div class="line total">
+            <span>Order Total:</span>
+            <span>${{ "%.2f"|format(total) }}</span>
+        </div>
+        <a class="btn" href="{{ url_for('checkout',listing_id=product['listing_id'],quantity=quantity) }}">
+            Proceed to Payment
+        </a>
+    </div>
+</body>
+</html>

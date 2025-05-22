@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Wishlist</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Helvetica Neue, sans-serif;
+        }
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        nav {
+            background-color: #1781f8;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+        }
+        nav .logo {
+            display: flex;
+            align-items: center;
+        }
+        nav .title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        nav ul {
+            list-style: none;
+            display: flex;
+        }
+        nav ul li {
+            margin-left: 20px;
+            font-weight: bold;
+        }
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+        nav ul li a:hover {
+            background-color: #00adfd;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        .wishlist-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .wishlist-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .wishlist-header h1 {
+            color: #1781f8;
+        }
+        .wishlist-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-gap: 20px;
+        }
+        .wishlist-item {
+            background-color: #fff;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            padding: 15px;
+            transition: box-shadow 0.3s;
+            position: relative;
+        }
+        .wishlist-item:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .item-name {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .item-seller {
+            color: #666;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+        .item-date {
+            color: #666;
+            font-size: 0.8em;
+            margin-bottom: 10px;
+        }
+        .item-price {
+            color: #1781f8;
+            font-weight: bold;
+            font-size: 1.2em;
+            margin: 10px 0;
+        }
+        .item-status {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .status-active {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .status-soldout {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .status-inactive {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .item-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 15px;
+        }
+        .btn {
+            display: inline-block;
+            background-color: #1781f8;
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            flex: 1;
+        }
+        .btn:hover {
+            background-color: #00adfd;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+        }
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+        .remove-form {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        .remove-btn {
+            background-color: transparent;
+            color: #dc3545;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        .wishlist-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        .empty-wishlist {
+            text-align: center;
+            padding: 40px 0;
+            color: #666;
+        }
+        .empty-wishlist p {
+            margin-bottom: 20px;
+        }
+        .flash-message {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .flash-message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav>
+        <div class="logo">
+            <img src="https://upload.wikimedia.org/wikipedia/en/3/3a/Penn_State_Nittany_Lions_logo.svg" alt="Penn State Logo" height="40">
+            <div class="title">Nittany Business</div>
+        </div>
+        <ul>
+            <li><a href="{{ url_for('home') }}">Home</a></li>
+            <li><a href="{{ url_for('categories') }}">Categories</a></li>
+            <li><a href="{{ url_for('advanced_search') }}">Advanced Search</a></li>
+            <li><a href="{{ url_for('view_cart') }}">Cart</a></li>
+            <li><a href="{{ url_for('view_wishlist') }}">Wishlist</a></li>
+            <li><a href="{{ url_for('buyer_orders') }}">My Orders</a></li>
+            <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message {% if category == 'error' %}error{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="wishlist-container">
+            <div class="wishlist-header">
+                <h1>My Wishlist</h1>
+            </div>
+            
+            {% if wishlist_items %}
+                <div class="wishlist-items">
+                    {% for item in wishlist_items %}
+                        <div class="wishlist-item">
+                            <!-- Remove button -->
+                            <form action="{{ url_for('remove_from_wishlist_route') }}" method="post" class="remove-form">
+                                <input type="hidden" name="seller_email" value="{{ item.seller_email }}">
+                                <input type="hidden" name="listing_id" value="{{ item.listing_id }}">
+                                <button type="submit" class="remove-btn" title="Remove from wishlist">×</button>
+                            </form>
+                            
+                            <div class="item-name">{{ item.product_name }}</div>
+                            <div class="item-seller">Seller: {{ item.seller_name }}</div>
+                            <div class="item-date">Added on: {{ item.date_added }}</div>
+                            
+                            <!-- Status badge -->
+                            {% if item.status == 1 and item.quantity > 0 %}
+                                <div class="item-status status-active">Available</div>
+                            {% elif item.status == 2 or item.quantity <= 0 %}
+                                <div class="item-status status-soldout">Sold Out</div>
+                            {% else %}
+                                <div class="item-status status-inactive">Inactive</div>
+                            {% endif %}
+                            
+                            <div class="item-price">${{ "%.2f"|format(item.product_price) }}</div>
+                            
+                            <div class="item-actions">
+                                <a href="{{ url_for('product_detail', seller_email=item.seller_email, listing_id=item.listing_id) }}" class="btn">View Details</a>
+                                
+                                {% if item.status == 1 and item.quantity > 0 %}
+                                    <form action="{{ url_for('add_to_cart_route') }}" method="post" style="flex: 1;">
+                                        <input type="hidden" name="seller_email" value="{{ item.seller_email }}">
+                                        <input type="hidden" name="listing_id" value="{{ item.listing_id }}">
+                                        <input type="hidden" name="quantity" value="1">
+                                        <button type="submit" class="btn">Add to Cart</button>
+                                    </form>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                
+                <div class="wishlist-actions">
+                    <form action="{{ url_for('add_wishlist_to_cart') }}" method="post">
+                        <button type="submit" class="btn">Add All Available Items to Cart</button>
+                    </form>
+                </div>
+            {% else %}
+                <div class="empty-wishlist">
+                    <p>Your wishlist is empty.</p>
+                    <a href="{{ url_for('categories') }}" class="btn">Continue Shopping</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

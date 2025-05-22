@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Browse Categories - NittanyBusiness</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Helvetica Neue, sans-serif;
+        }
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        nav {
+            background-color: #1781f8;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+        }
+        nav .logo {
+            display: flex;
+            align-items: center;
+        }
+        nav .title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        nav ul {
+            list-style: none;
+            display: flex;
+        }
+        nav ul li {
+            margin-left: 20px;
+            font-weight: bold;
+        }
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+        nav ul li a:hover {
+            background-color: #00adfd;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        .breadcrumb {
+            background-color: #fff;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .breadcrumb a {
+            color: #1781f8;
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        .breadcrumb .separator {
+            margin: 0 10px;
+        }
+        .content {
+            display: flex;
+            gap: 20px;
+        }
+        .sidebar {
+            flex: 0 0 250px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .sidebar h3 {
+            margin-bottom: 15px;
+            color: #1781f8;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        .sidebar ul {
+            list-style: none;
+        }
+        .sidebar ul li {
+            margin-bottom: 10px;
+        }
+        .sidebar ul li a {
+            color: #333;
+            text-decoration: none;
+            display: block;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background-color 0.2s;
+        }
+        .sidebar ul li a:hover {
+            background-color: #f0f0f0;
+            color: #1781f8;
+        }
+        .main-content {
+            flex: 1;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .main-content h2 {
+            margin-bottom: 15px;
+            color: #1781f8;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        .products {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .product {
+            background-color: #fff;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            padding: 15px;
+            transition: box-shadow 0.3s;
+        }
+        .product:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .product h3 {
+            margin-bottom: 10px;
+        }
+        .product p {
+            margin-bottom: 10px;
+            color: #666;
+        }
+        .product .price {
+            font-weight: bold;
+            color: #1781f8;
+            font-size: 1.2em;
+        }
+        .product .btn {
+            display: block;
+            text-align: center;
+            background-color: #1781f8;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-top: 10px;
+        }
+        .product .btn:hover {
+            background-color: #00adfd;
+        }
+        .search-box {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        .search-box input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .search-box button {
+            padding: 10px 20px;
+            background-color: #1781f8;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .search-box button:hover {
+            background-color: #00adfd;
+        }
+        .no-products {
+            color: #666;
+            font-style: italic;
+        }
+        .filter-section {
+            margin-top: 20px;
+        }
+        .filter-section h3 {
+            margin-bottom: 15px;
+            color: #1781f8;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        .filter-form label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        .filter-form input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .filter-form button {
+            width: 100%;
+            padding: 10px;
+            background-color: #1781f8;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .filter-form button:hover {
+            background-color: #00adfd;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav>
+        <div class="logo">
+            <img src="https://upload.wikimedia.org/wikipedia/en/3/3a/Penn_State_Nittany_Lions_logo.svg" alt="Penn State Logo" height="40">
+            <div class="title">Nittany Business</div>
+        </div>
+        <ul>
+            <li><a href="{{ url_for('home') }}">Home</a></li>
+            <li><a href="{{ url_for('search') }}">Back to Search</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Breadcrumb Navigation -->
+        <div class="breadcrumb">
+            {% for item in breadcrumb_path %}
+                {% if not loop.last %}
+                    <a href="{{ url_for('categories', parent=item.link) }}">{{ item.name }}</a>
+                    <span class="separator">›</span>
+                {% else %}
+                    <span>{{ item.name }}</span>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="content">
+            <!-- Category Sidebar -->
+            <div class="sidebar">
+                <h3>Subcategories</h3>
+                {% if subcategories %}
+                    <ul>
+                        {% for subcat in subcategories %}
+                            <li>
+                                <a href="{{ url_for('categories', parent=subcat.category_name) }}">
+                                    {{ subcat.category_name }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No subcategories found</p>
+                {% endif %}
+            </div>
+            <!-- Product Listings -->
+            <div class="main-content">
+                <h2>{{ current_category }}</h2>
+                
+                {% if products %}
+                    <div class="products">
+                        {% for product in products %}
+                            <div class="product">
+                                <h3>{{ product.product_name }}</h3>
+                                <p>{{ product.product_description|truncate(100) }}</p>
+                                <p class="price">${{ "%.2f"|format(product.product_price) }}</p>
+                                <p>Available: {{ product.quantity }}</p>
+                                <a href="{{ url_for('product_detail', seller_email=product.seller_email, listing_id=product.listing_id) }}" class="btn">View Details</a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="no-products">No products found in this category</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Make category items clickable
+            const categoryItems = document.querySelectorAll('.sidebar ul li a');
+            categoryItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    // Add loading effect or other UI feedback if needed
+                    document.body.style.cursor = 'wait';
+                });
+            });
+            
+            // Handle search form submission
+            const searchForm = document.querySelector('.search-box form');
+            searchForm.addEventListener('submit', function(e) {
+                const searchInput = this.querySelector('input[name="query"]');
+                if (searchInput.value.trim() === '') {
+                    e.preventDefault();
+                    searchInput.focus();
+                    // Optional: Show a validation message
+                    alert('Please enter a search term');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

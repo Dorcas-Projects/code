@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title> Checkout</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Helvetica Neue, sans-serif;
+        }
+        body {
+            background-color: #f5f5f5;
+            color: #000000;
+            line-height: 1.6;
+        }
+        nav {
+            background-color: #1781f8;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+        }
+        nav .logo {
+            display: flex;
+            align-items: center;
+        }
+        nav .title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        nav ul {
+            list-style: none;
+            display: flex;
+        }
+        nav ul li {
+            margin-left: 20px;
+            font-weight: bold;
+        }
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+        nav ul li a:hover {
+            background-color: #00adfd;
+        }
+        .box {
+            max-width: 500px;
+            margin: 40px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 1em;
+            color: #1781f8;
+        }
+        .summary div {
+            display: flex;
+            justify-content: space-between;
+            margin: 0.5em 0;
+        }
+        .summary .total {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        label {
+            display: block;
+            margin: 1em 0 0.5em;
+        }
+        input[type="text"], input[type="number"], .card-choice label {
+            width: 100%;
+            padding: 8px;
+            border-radius: 4px;
+            margin-top: 0.25em;
+        }
+        .card-choice {
+            margin-bottom: 1em;
+        }
+        #new-card-fields {
+            margin-top: 1em;
+        }
+        .btn {
+            display: block;
+            width: 100%;
+            margin-top: 1.5em;
+            padding: 10px;
+            background: #1781f8;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 1em;
+            text-align: center;
+            cursor: pointer;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <img src="https://upload.wikimedia.org/wikipedia/en/3/3a/Penn_State_Nittany_Lions_logo.svg" alt="Penn State Logo" height="40">
+            <div class="title">Nittany Business</div>
+        </div>
+        <ul>
+            <li><a href="{{url_for('home')}}">Home</a></li>
+            <li><a href="{{url_for('search')}}">Back to Search</a></li>
+        </ul>
+    </nav>
+    <div class="box">
+        <h2>Checkout</h2>
+        <div class="summary">
+            <div>
+                <span>Product:</span>
+                <span>{{product['product_name']}}</span>
+            </div>
+            <div>
+                <span>Quantity:</span>
+                <span>{{quantity}}</span>
+            </div>
+            <div>
+                <span>Unit Price:</span>
+                <span>${{"%.2f"|format(product['product_price'])}}</span>
+            </div>
+            <div class="total">
+                <span>Total:</span>
+                <span>${{ "%.2f"|format(total)}}</span>
+            </div>
+        </div>
+        <form method="POST" action="{{url_for('checkout',listing_id=product['listing_id'],quantity=quantity)}}">
+            <!-- card choice  -->
+            {% if saved_cards %}
+                <div class="card-choice">
+                    <label><strong>Use a saved card:</strong></label>
+                    {% for card in saved_cards %}
+                        <label>
+                            <input type="radio" name="card_choice" value="{{card['credit_card_num']}}">
+                            {{card['card_type'] or "Card" }}ending in {{ card['credit_card_num'][-4:]}}
+                        </label>
+                    {% endfor %}
+                    <label><strong>Or Enter A New Card:</strong></label>
+                </div>
+            {% endif %}
+            <!-- new card  -->
+            <input type="hidden" name="card_choice" value="new">
+            <div id="new-card-fields">
+                <label for="cardholder_name">Name on card</label>
+                <input type="text" id="cardholder_name" name="cardholder_name" placeholder="Name">
+                <label for="card_number">Card Number</label>
+                <input type="text" id="card_number" name="card_number" placeholder="••••-••••-••••-••••" maxlength="19">
+                <label for="card_type">Card Type</label>
+                <input type="text" id="card_type" name="card_type" placeholder="e.g. MasterCard">
+                <label for="exp_month">Expiry Month</label>
+                <input type="number" id="exp_month" name="exp_month" min="1" max="12" placeholder="MM">
+                <label for="exp_year">Expiry Year</label>
+                <input type="number" id="exp_year" name="exp_year" placeholder="YYYY">
+                <label for="security_code">Security Code</label>
+                <input type="text" id="security_code" name="security_code" maxlength="4" placeholder="123">
+                <label>
+                    <input type="checkbox" name="save_card" value="yes">Save card
+                </label>
+            </div>
+            <input type="hidden" name="total" value="{{total}}">
+            <button type="submit" class="btn">
+                Confirm &amp; Pay ${{"%.2f"|format(total)}}
+            </button>
+        </form>
+    </div>
+</body>
+</html>

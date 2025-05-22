@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Write Review</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Helvetica Neue, sans-serif;
+        }
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        nav {
+            background-color: #1781f8;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+        }
+        nav .logo {
+            display: flex;
+            align-items: center;
+        }
+        nav .title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        nav ul {
+            list-style: none;
+            display: flex;
+        }
+        nav ul li {
+            margin-left: 20px;
+            font-weight: bold;
+        }
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+        nav ul li a:hover {
+            background-color: #00adfd;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        .review-container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .review-container h1 {
+            margin-bottom: 20px;
+            color: #1781f8;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        .product-info {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+        .product-name {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+        .product-seller {
+            color: #666;
+            margin-bottom: 5px;
+        }
+        .product-date {
+            color: #666;
+            font-size: 0.9em;
+        }
+        .review-form {
+            margin-top: 20px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        .rating-group {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+        }
+        .rating-group input {
+            display: none;
+        }
+        .rating-group label {
+            cursor: pointer;
+            font-size: 30px;
+            color: #ddd;
+            padding: 0 5px;
+        }
+        .rating-group label:hover,
+        .rating-group label:hover ~ label,
+        .rating-group input:checked ~ label {
+            color: #ffc107;
+        }
+        .form-group textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            resize: vertical;
+            font-size: 16px;
+        }
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        .btn {
+            display: inline-block;
+            background-color: #1781f8;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+        }
+        .btn:hover {
+            background-color: #00adfd;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        .flash-message {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .flash-message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav>
+        <div class="logo">
+            <img src="https://upload.wikimedia.org/wikipedia/en/3/3a/Penn_State_Nittany_Lions_logo.svg" alt="Penn State Logo" height="40">
+            <div class="title">Nittany Business</div>
+        </div>
+        <ul>
+            <li><a href="{{ url_for('home') }}">Home</a></li>
+            <li><a href="{{ url_for('search') }}">Search for Products</a></li>
+            <li><a href="{{ url_for('cart') }}">Shopping Cart</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message {% if category == 'error' %}error{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="review-container">
+            <h1>{% if review %}Edit{% else %}Write{% endif %} Review</h1>
+            
+            <div class="product-info">
+                <div class="product-name">{{ order.product_name }}</div>
+                <div class="product-seller">Seller: {{ order.seller_name }}</div>
+                <div class="product-date">Ordered on: {{ order.date }}</div>
+            </div>
+            
+            <form action="{{ form_action }}" method="post" class="review-form">
+                <div class="form-group">
+                    <label>Rating</label>
+                    <div class="rating-group">
+                        <input type="radio" id="star5" name="rating" value="5" {% if review and review.rating == 5 %}checked{% endif %} required>
+                        <label for="star5">★</label>
+                        <input type="radio" id="star4" name="rating" value="4" {% if review and review.rating == 4 %}checked{% endif %}>
+                        <label for="star4">★</label>
+                        <input type="radio" id="star3" name="rating" value="3" {% if review and review.rating == 3 %}checked{% endif %}>
+                        <label for="star3">★</label>
+                        <input type="radio" id="star2" name="rating" value="2" {% if review and review.rating == 2 %}checked{% endif %}>
+                        <label for="star2">★</label>
+                        <input type="radio" id="star1" name="rating" value="1" {% if review and review.rating == 1 %}checked{% endif %}>
+                        <label for="star1">★</label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="review_text">Review</label>
+                    <textarea id="review_text" name="review_text" placeholder="Write your review here..." required>{{ review.review_desc if review else '' }}</textarea>
+                </div>
+                
+                <div class="form-actions">
+                    <a href="{{ url_for('order_detail', order_id=order.order_id) }}" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn">Submit Review</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

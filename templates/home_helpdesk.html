@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HelpDesk Home Page - NittanyBusiness</title>
+    <style>
+         * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Helvetica Neue, sans-serif;
+        }
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        nav {
+            background-color: #1781f8;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+        }
+        nav .logo {
+            display: flex;
+            align-items: center;
+        }
+        nav .title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        nav ul {
+            list-style: none;
+            display: flex;
+        }
+        nav ul li {
+            margin-left: 20px;
+            font-weight: bold;
+        }
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+        nav ul li a:hover {
+            background-color: #00adfd;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 80px auto 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .welcome {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .welcome h1 {
+            font-size: 32px;
+            margin-bottom: 15px;
+            color: #1781f8;
+        }
+        .welcome p {
+            font-size: 18px;
+            color: #666;
+        }
+        .btn-container {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .btn-container a {
+            background-color: #1781f8;
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            font-weight: bold;
+        }
+        .btn-container a:hover {
+            background-color: #00adfd;
+        }
+        .request-summary {
+            margin-top: 30px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .summary-title {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: #1781f8;
+            text-align: center;
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 10px;
+        }
+        .summary-cards {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .summary-card {
+            flex: 1;
+            min-width: 200px;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .card-unassigned {
+            background-color: #f8d7da;
+        }
+        .card-assigned {
+            background-color: #fff3cd;
+        }
+        .card-completed {
+            background-color: #d4edda;
+        }
+        .card-number {
+            font-size: 32px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .card-unassigned .card-number {
+            color: #721c24;
+        }
+        .card-assigned .card-number {
+            color: #856404;
+        }
+        .card-completed .card-number {
+            color: #155724;
+        }
+        .card-label {
+            font-weight: bold;
+        }
+        .alert {
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <img src="https://upload.wikimedia.org/wikipedia/en/3/3a/Penn_State_Nittany_Lions_logo.svg" alt="Penn State Logo" height = "40">
+            <div class = "title">Nittany Business </div>
+        </div>
+        <ul>
+            <li><a href="{{ url_for('home') }}">Home</a></li>
+            <li><a href="{{ url_for('helpdesk_requests') }}">View Requests</a></li>
+            <li><a href="{{ url_for('categories') }}">Categories</a></li>
+            <li><a href="{{ url_for('search') }}">Search</a></li>
+            <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        </ul>
+    </nav>
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <div class="welcome">
+            <h1>Welcome to the Helpdesk Dashboard!</h1>
+            <p>Use the navigation bar above or buttons below to View Requests, Manage Categories, and Search Products.</p>
+        </div>
+        
+        <!-- Request Statistics -->
+        <div class="request-summary">
+            <h2 class="summary-title">Support Request Summary</h2>
+            <div class="summary-cards">
+                <div class="summary-card card-unassigned">
+                    <div class="card-label">Unassigned Requests</div>
+                    <div class="card-number">{{ unassigned_count }}</div>
+                </div>
+                <div class="summary-card card-assigned">
+                    <div class="card-label">Assigned to You</div>
+                    <div class="card-number">{{ assigned_count }}</div>
+                </div>
+                <div class="summary-card card-completed">
+                    <div class="card-label">Completed Requests</div>
+                    <div class="card-number">{{ completed_count }}</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="btn-container">
+            <a href="{{ url_for('helpdesk_requests') }}">View Requests</a>
+            <a href="{{ url_for('categories') }}">Browse Categories</a>
+            <a href="{{ url_for('search') }}">Search Products</a>
+        </div>
+    </div>
+</body>
+</html>

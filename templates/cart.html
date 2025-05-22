@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Shopping Cart</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Helvetica Neue, sans-serif;
+        }
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        nav {
+            background-color: #1781f8;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+        }
+        nav .logo {
+            display: flex;
+            align-items: center;
+        }
+        nav .title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        nav ul {
+            list-style: none;
+            display: flex;
+        }
+        nav ul li {
+            margin-left: 20px;
+            font-weight: bold;
+        }
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+        nav ul li a:hover {
+            background-color: #00adfd;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        .cart-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .cart-header h1 {
+            font-size: 24px;
+        }
+        .cart-items {
+            margin-bottom: 20px;
+        }
+        .cart-item {
+            display: grid;
+            grid-template-columns: 3fr 1fr 1fr 1fr 1fr;
+            gap: 15px;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .cart-item-header {
+            font-weight: bold;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+        }
+        .cart-item-name {
+            font-weight: bold;
+        }
+        .cart-item-price,
+        .cart-item-total {
+            text-align: right;
+        }
+        .cart-item-quantity {
+            display: flex;
+            align-items: center;
+        }
+        .cart-item-quantity input {
+            width: 60px;
+            padding: 5px;
+            margin: 0 10px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .cart-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-top: 2px solid #ddd;
+        }
+        .cart-total {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .cart-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .btn {
+            display: inline-block;
+            background-color: #1781f8;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+        }
+        .btn:hover {
+            background-color: #00adfd;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+        }
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+        .empty-cart {
+            padding: 50px 0;
+            text-align: center;
+            color: #666;
+        }
+        .empty-cart p {
+            margin-bottom: 20px;
+        }
+        .flash-message {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .flash-message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav>
+        <div class="logo">
+            <img src="https://upload.wikimedia.org/wikipedia/en/3/3a/Penn_State_Nittany_Lions_logo.svg" alt="Penn State Logo" height="40">
+            <div class="title">Nittany Business</div>
+        </div>
+        <ul>
+            <li><a href="{{ url_for('home') }}">Home</a></li>
+            <li><a href="{{ url_for('search') }}">Search For Products</a></li>
+            <li><a href="{{ url_for('buyers_orders') }}">My Orders</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message {% if category == 'error' %}error{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Cart Container -->
+        <div class="cart-container">
+            <div class="cart-header">
+                <h1>Shopping Cart</h1>
+            </div>
+            
+            {% if cart_items %}
+                <div class="cart-items">
+                    <!-- Header Row -->
+                    <div class="cart-item cart-item-header">
+                        <div>Product</div>
+                        <div>Price</div>
+                        <div>Quantity</div>
+                        <div>Total</div>
+                        <div>Actions</div>
+                    </div>
+                    
+                    <!-- Cart Items -->
+                    {% for item in cart_items %}
+                        <div class="cart-item">
+                            <div class="cart-item-name">
+                                {{ item.product_name }}
+                                <div style="font-weight: normal; font-size: 0.9em; color: #666;">
+                                    Seller: {{ item.seller_name }}
+                                </div>
+                            </div>
+                            
+                            <div class="cart-item-price">${{ "%.2f"|format(item.product_price) }}</div>
+                            
+                            <div class="cart-item-quantity">
+                                <form action="{{ url_for('update_cart') }}" method="post">
+                                    <input type="hidden" name="seller_email" value="{{ item.seller_email }}">
+                                    <input type="hidden" name="listing_id" value="{{ item.listing_id }}">
+                                    <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="{{ item.available_quantity }}" onchange="this.form.submit()">
+                                </form>
+                            </div>
+                            
+                            <div class="cart-item-total">${{ "%.2f"|format(item.product_price * item.quantity) }}</div>
+                            
+                            <div>
+                                <form action="{{ url_for('remove_from_cart_route') }}" method="post">
+                                    <input type="hidden" name="seller_email" value="{{ item.seller_email }}">
+                                    <input type="hidden" name="listing_id" value="{{ item.listing_id }}">
+                                    <button type="submit" class="btn btn-danger" style="padding: 5px 10px; font-size: 14px;">Remove</button>
+                                </form>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                
+                <div class="cart-actions">
+                    <div class="cart-total">Total: ${{ "%.2f"|format(total) }}</div>
+                    
+                    <div class="cart-buttons">
+                        <form action="{{ url_for('clear_cart_route') }}" method="post">
+                            <button type="submit" class="btn btn-secondary">Clear Cart</button>
+                        </form>
+                        
+                        <a href="{{ url_for('checkout_cart') }}" class="btn">Proceed to Checkout</a>
+                    </div>
+                </div>
+            {% else %}
+                <div class="empty-cart">
+                    <p>Your shopping cart is empty.</p>
+                    <a href="{{ url_for('categories') }}" class="btn">Continue Shopping</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

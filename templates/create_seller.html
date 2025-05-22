@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <meta charset="UTF-8">
+    <title>Create Seller Page</title>
+    <style>
+        body {
+            background-image: linear-gradient(#053aea, #6dd1fa);
+            background-attachment: fixed;
+            font-family: Open Sans, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            margin: 80px auto;
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 8px;
+        }
+        .logo {
+          display: flex;
+          justify-content: center;
+          margin-bottom: 20px;
+        }
+        .logo img {
+          width: 100px;
+          height: auto;
+        }
+        .login-container h2 {
+            padding-left: 10px;
+            margin-bottom: 15px;
+            font-weight: 600;
+            color: #333;
+        }
+        .login-container h3 {
+            padding:0 15px 0 10px;
+            margin-bottom: 15px;
+            font-weight: 600;
+            color: #333;
+        }
+        label {
+            font-weight: 600;
+            margin-bottom: 10px;
+            padding-left: 10px;
+            display:block;
+            color: #555;
+        }
+        input[type="text"], input[type="password"], select[id="account_type"] {
+            width: 100%;
+            padding: 12px 15px 15px 15px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            font-size: 1rem;
+        }
+        input[type="submit"] {
+            width: 100%;
+            padding: 12px 15px;
+            background-color: #00adfd;
+            border: none;
+            border-radius: 20px;
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+			background-color: #0093e6;
+		}
+        .error-message {
+            margin-top: 20px;
+            text-align: center;
+            color: #d9534f;
+            font-weight: 600;
+        }
+        .logo {
+			text-align: center;
+			margin-bottom: 20px;
+		}
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class = "logo">
+            <img src="https://upload.wikimedia.org/wikipedia/en/3/3a/Penn_State_Nittany_Lions_logo.svg" alt="Penn State Logo">
+        </div>
+        <h2>Welcome to Nittany Business </h2>
+        <h3> Please Enter New Seller Info</h3>
+        <!-- Create Seller Information -->
+        <form action="/create_seller" method="POST">
+            <div class="form-group">
+                <label for="username">Email</label>
+                <input type="text" id="username" name="email" placeholder="e.g johndoe@nittybiz.com" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Enter Password</label>
+                <input type="password" id="password" name="password1" placeholder="e.g abc123" required>
+                <label for="password">Confirm Password</label>
+                <input type="password" id="password" name="password2" placeholder="e.g abc123" required>
+            </div>
+
+            <div class="form-group">
+                <label for="business_name">New Business Name</label>
+                <input type="text" id="business_name" name="business_name" placeholder="e.g Waffle House" required>
+            </div>
+            <div class="form-group">
+                <label for="bank_routing_number">Bank Routing Number</label>
+                <input type="text" id="bank_routing_number" name="bank_routing_number" placeholder="e.g 1234-5678-90" required>
+            </div>
+            <div class="form-group">
+                <label for="bank_account_number">Bank Account Number</label>
+                <input type="text" id="bank_account_number" name="bank_account_number" placeholder="e.g 12345678" required>
+            </div>
+            <div class="form-group">
+                <label for="balance">Bank Balance</label>
+                <input type="text" id="balance" name="balance" placeholder="e.g 12345" required>
+            </div>
+            <input type="submit" value="Create">
+        </form>
+        <!-- if invalid password, display flashed message -->
+        {% with error = get_flashed_messages() %}
+            {% if error %}
+            <div class="error-message">
+                <h3>{{ error[0] }}</h3>
+            </div>
+            {% endif %}
+        {% endwith %}
+      </div>
+</body>
+</html>

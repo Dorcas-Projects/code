@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Personal Info</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Helvetica Neue, sans-serif;
+        }
+        body {
+            background-color: #f5f5f5;
+            color: #000000;
+            line-height: 1.6;
+        }
+        nav {
+            background-color: #1781f8;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+        }
+        nav .logo {
+            display: flex;
+            align-items: center;
+        }
+        nav .title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        nav ul {
+            list-style: none;
+            display: flex;
+        }
+        nav ul li {
+            margin-left: 20px;
+            font-weight: bold;
+        }
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+        nav ul li a:hover {
+            background-color: #00adfd;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 80px auto 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .welcome {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .welcome h1 {
+            font-size: 32px;
+            margin-bottom: 15px;
+            color: #1781f8;
+        }
+        .welcome p {
+            font-size: 18px;
+            color: #666;
+        }
+        .btn-container a {
+            background-color: #1781f8;
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            font-weight: bold;
+        }
+        .btn-container a:hover {
+            background-color: #00adfd;
+        }
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 12px 15px 15px 15px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            font-size: 1rem;
+        }
+        input[type="submit"] {
+            width: 100%;
+            padding: 12px 15px;
+            background-color: #00adfd;
+            border: none;
+            border-radius: 20px;
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+			background-color: #0093e6;
+		}
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <img src="https://upload.wikimedia.org/wikipedia/en/3/3a/Penn_State_Nittany_Lions_logo.svg" alt="Penn State Logo" height="40">
+            <div class="title">Nittany Business</div>
+        </div>
+        <ul>
+            <li><a href="{{ url_for('home') }}">Home</a></li>
+            <li><a href="{{ url_for('search') }}">Search</a></li>
+            <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <div class="welcome">
+            <h1>Welcome to your Seller Profile!</h1>
+            <p>Here, you can update any account information</p>
+        </div>
+        <form action="/update_seller_personal_info" method="POST">
+            <div class="form-group">
+                <label for="password">New Password</label>
+                <input type="password" id="password" name="password" placeholder="e.g abc123">
+            </div>
+            <div class="form-group">
+                <label for="business_name">New Business Name</label>
+                <input type="text" id="business_name" name="business_name" placeholder="{{ current_business_name }}">
+            </div>
+            <div class="form-group">
+                <label for="bank_routing_number">Bank Routing Number</label>
+                <input type="text" id="bank_routing_number" name="bank_routing_number" placeholder="{{ current_bank_routing_number }}">
+            </div>
+            <div class="form-group">
+                <label for="bank_account_number">Bank Account Number</label>
+                <input type="text" id="bank_account_number" name="bank_account_number" placeholder="{{ current_bank_account_number }}">
+            </div>
+            <input type="submit" value="Update">
+        </form>
+
+    </div>
+
+</body>
+</html>
